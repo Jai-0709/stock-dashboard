@@ -138,7 +138,13 @@ if run_btn:
             preds = model.predict(future_t)
 
             future_dates = pd.date_range(df["Date"].iloc[-1] + pd.Timedelta(days=1), periods=forecast_days)
-            forecast_df = pd.DataFrame({"Date": future_dates, "Predicted_Close": preds, "RSI": 50})
+
+            # 🔹 FIXED: RSI column must match length of forecast
+            forecast_df = pd.DataFrame({
+                "Date": future_dates,
+                "Predicted_Close": preds,
+                "RSI": [50] * forecast_days
+            })
 
             # --- Tabs ---
             tab1, tab2, tab3, tab4 = st.tabs(["📊 Charts", "📑 Forecast", "💰 Portfolio", "📥 Reports"])
@@ -182,4 +188,4 @@ if run_btn:
                 pdf_bytes = create_pdf_bytes(ticker, forecast_df)
                 st.download_button("⬇️ Download Forecast Report as PDF", pdf_bytes, file_name=f"{ticker}_report.pdf", mime="application/pdf")
 
-            
+            st.success("✅ Cloud Dashboard Ready!")
